@@ -1,5 +1,5 @@
 # ASSESSMENT-2---UTILITY-APP
-A repository containing the contents of a Python script and other elements for creative an app using Tkinter and API for showing data.
+A repository containing the contents of a Python script and other assets for creating an app using Tkinter and API for showing data.
 ```
     ____  ____  __ __ ________  _______  _   __     ___    ____  ____
    / __ \/ __ \/ //_// ____/  |/  / __ \/ | / /    /   |  / __ \/  _/
