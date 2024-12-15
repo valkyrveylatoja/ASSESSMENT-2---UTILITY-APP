@@ -65,25 +65,25 @@ def open_new_window():
     new_image = ImageTk.PhotoImage(resized_image)
     newwindow.iconphoto(False, new_image)
     
-    start_y = 300
-    end_y = 150
+    start_y = 550
+    end_y = 400
     
-    def animate_button():
+    def music_animate_button():
         def move_button():
             nonlocal y
             if y > end_y:
                 step = max(1, (y - end_y) // 10)
                 y -= step
-                music_button.place(x=150, y=y)
+                music_button.place(x=430, y=y)
                 newwindow.after(10, move_button)
                 
         y = start_y
         move_button()
     
     music_button = tk.Button(newwindow, text = "MUSIC OFF", font=button_font, command = lambda: play_music(music_button))
-    music_button.pack
+    music_button.pack()
     
-    animate_button()
+    music_animate_button()
     
 root = tk.Tk()
 root.title("Pokemon API")
