@@ -64,23 +64,29 @@ def open_new_window():
     resized_image = img.resize((100, 100))
     new_image = ImageTk.PhotoImage(resized_image)
     newwindow.iconphoto(False, new_image)
+        
+    font = tkFont.Font(family = "Agency FB", size = 30, weight = "bold")
+    
+    header = tk.Label(newwindow, text="Pokedex", bg="#f54260", fg="white", font=font, height=2)
+    header.pack(fill="x", side="top")
     
     start_y = 550
-    end_y = 400
-    
+    end_y = 450
+
     def music_animate_button():
         def move_button():
             nonlocal y
             if y > end_y:
                 step = max(1, (y - end_y) // 10)
                 y -= step
-                music_button.place(x=430, y=y)
+                music_button.place(x=510, y=y)
                 newwindow.after(10, move_button)
                 
         y = start_y
         move_button()
     
-    music_button = tk.Button(newwindow, text = "MUSIC OFF", font=button_font, command = lambda: play_music(music_button))
+    button_font2 = tkFont.Font(family = "Agency FB", size = 15, weight = "bold")
+    music_button = tk.Button(newwindow, text = "MUSIC OFF", font=button_font2, command = lambda: play_music(music_button))
     music_button.pack()
     
     music_animate_button()
