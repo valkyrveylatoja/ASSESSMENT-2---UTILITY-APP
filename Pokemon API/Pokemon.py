@@ -5,11 +5,32 @@ Created on Sat Dec 14 12:37:29 2024
 @author: Val Kyrvey Latoja
 """
 
+import pygame
+import requests
 import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import Label
 from PIL import Image, ImageTk
 from io import BytesIO
+
+pygame.mixer.init()
+music_file = "Pokemon Center - Tee Lopes.mp3"
+
+def play_music(button):
+    if pygame.mixer.music.get_busy():
+        pygame.mixer.music.stop()
+        button.config(text="MUSIC OFF")
+    else:
+        pygame.mixer.music.load(music_file)
+        pygame.mixer.music.play(-1)
+        button.config(text="MUSIC ON")
+        
+def getpokemondata():
+    url = "https://pokeapi.co/" 
+    response = requests.get(url)
+    data = response.json()
+    
+    pass
 
 def animation():
     global y_position, speed
@@ -43,8 +64,26 @@ def open_new_window():
     resized_image = img.resize((100, 100))
     new_image = ImageTk.PhotoImage(resized_image)
     newwindow.iconphoto(False, new_image)
-
-    newwindow.mainloop()
+    
+    start_y = 300
+    end_y = 150
+    
+    def animate_button():
+        def move_button():
+            nonlocal y
+            if y > end_y:
+                step = max(1, (y - end_y) // 10)
+                y -= step
+                music_button.place(x=150, y=y)
+                newwindow.after(10, move_button)
+                
+        y = start_y
+        move_button()
+    
+    music_button = tk.Button(newwindow, text = "MUSIC OFF", font=button_font, command = lambda: play_music(music_button))
+    music_button.pack
+    
+    animate_button()
     
 root = tk.Tk()
 root.title("Pokemon API")
