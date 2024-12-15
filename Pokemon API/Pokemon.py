@@ -24,7 +24,12 @@ def play_music(button):
         pygame.mixer.music.load(music_file)
         pygame.mixer.music.play(-1)
         button.config(text="MUSIC ON")
-        
+
+def on_closing():
+    pygame.mixer.music.stop()
+    root.destroy()
+    newwindow.destroy()
+         
 def getpokemondata():
     url = "https://pokeapi.co/" 
     response = requests.get(url)
@@ -53,6 +58,7 @@ def fade_in_text(step=0):
         root.after(20, fade_in_text, step + 1)
 
 def open_new_window():
+    global newwindow
     newwindow = tk.Toplevel(root)
     newwindow.title("Pokedex")
     newwindow_width = 600
@@ -88,6 +94,8 @@ def open_new_window():
     button_font2 = tkFont.Font(family = "Agency FB", size = 15, weight = "bold")
     music_button = tk.Button(newwindow, text = "MUSIC OFF", font=button_font2, command = lambda: play_music(music_button))
     music_button.pack()
+    
+    newwindow.protocol("WM_DELETE_WINDOW", on_closing)
     
     music_animate_button()
     
@@ -133,6 +141,8 @@ target_y = window_height // 2 - 350 // 2
 speed = 10
 
 title.place(x=window_width // 2 - title.winfo_width() // 2, y=y_position)
+
+root.protocol("WM_DELETE_WINDOW", on_closing)
 
 fade_in_text()
 
