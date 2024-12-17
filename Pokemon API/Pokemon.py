@@ -9,7 +9,7 @@ import pygame
 import requests
 import tkinter as tk
 import tkinter.font as tkFont
-from tkinter import Label
+from tkinter import messagebox
 from PIL import Image, ImageTk
 from io import BytesIO
 
@@ -29,13 +29,6 @@ def on_closing():
     pygame.mixer.music.stop()
     root.destroy()
     newwindow.destroy()
-         
-def getpokemondata():
-    url = "https://pokeapi.co/" 
-    response = requests.get(url)
-    data = response.json()
-    
-    pass
 
 def animation():
     global y_position, speed
@@ -58,6 +51,48 @@ def fade_in_text(step=0):
         root.after(20, fade_in_text, step + 1)
 
 def open_new_window():
+    
+    def getpokemondata():
+        pokemon_name_or_id = pokemon_entry.get().strip().lower()
+        
+        if not pokemon_name_or_id:
+            messagebox.showerror("Error", "Please enter a Pokemon name or ID")
+            return
+        try:
+            response = requests.get(f"https://pokeapi.co/api/v2/pokemon/{pokemon_name_or_id}")
+            response.raise_for_status()
+            
+            data = response.json()
+            name = data['name'].title()
+            height = data['height']
+            weight = data['weight']
+            
+            abilities = [ability['ability']['name'].title() for ability in data['abilities']]
+            abilities_text = ",".join(abilities)
+            
+            name_label.config(text=f"name: {name}")
+            height_label.config(text=f"Height: {height/10} m")
+            weight_label.config(text=f"height: {weight/10} kg")
+            abilities_label.config(text=f"Abilities: {abilities_text}")
+            
+            sprite_url = data['sprites']['front_default']
+            if sprite_url:
+                image_response = requests.get(sprite_url)
+                image_response.raise_for_status()
+                image_data = Image.open(BytesIO(image_response.content))
+                image_data = image_data.resize((150,150))
+                
+                global pokemon_image
+                pokemon_image = ImageTk.PhotoImage(image_data)
+                image_label.config(image=pokemon_image)
+            else:
+                messagebox.showinfo("Info", "No image available for this Pokemon.")
+                
+        except requests.exceptions.RequestException as e:
+            messagebox.showerror("Error", f"Failed to fetch data:\n{e}")
+        except KeyError:
+            messagebox.showerror("Error", "Invalid Pokemon name or ID. Please try again.")
+            
     global newwindow
     newwindow = tk.Toplevel(root)
     newwindow.title("Pokedex")
@@ -75,6 +110,23 @@ def open_new_window():
     
     header = tk.Label(newwindow, text="Pokedex", bg="#f54260", fg="white", font=font, height=2)
     header.pack(fill="x", side="top")
+    
+    font2 = tkFont.Font(family = "Agency FB", size = 15, weight = "bold")
+    
+    input_label = tk.Label(newwindow, text="Enter Pokemon Name or ID:", font=font2)
+    pokemon_entry = tk.Entry(newwindow, font=font2, width=20)
+    fetch_button = tk.Button(newwindow, text="Enter", command=getpokemondata, font=font2)
+    
+    input_label.pack()
+    pokemon_entry.pack(pady=5)
+    fetch_button.pack()
+
+    name_label = tk.Lavel(newwindow, text="Name: ", font=font)
+    height_label = tk.Label(newwindow, text="Height: ", font=font)
+    weight_label = tk.Label(newwindow, text="Weight: ", font=font)
+    abilities_label = tk.Label(newwindow, text="Abilities: ", font=font, wraplength=35)
+    
+    image_label = tk.Label(newwindow)
     
     start_y = 550
     end_y = 450
@@ -94,7 +146,7 @@ def open_new_window():
     button_font2 = tkFont.Font(family = "Agency FB", size = 15, weight = "bold")
     music_button = tk.Button(newwindow, text = "MUSIC OFF", font=button_font2, command = lambda: play_music(music_button))
     music_button.pack()
-    
+
     newwindow.protocol("WM_DELETE_WINDOW", on_closing)
     
     music_animate_button()
@@ -128,7 +180,7 @@ button_y = window_height // 2
 
 canvas.create_oval(button_x - button_radius, button_y - button_radius, button_x + button_radius, button_y + button_radius, fill="white", outline="black", width=2)
 
-title_text = "Pokedex"
+title_text = "Pokemon API"
 title = tk.Label(root, text=title_text, font=font, fg="white", bg="#f54260")
 title.update_idletasks()
 title_width = title.winfo_width()
