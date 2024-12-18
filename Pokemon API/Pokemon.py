@@ -24,7 +24,7 @@ def play_music(button):
         pygame.mixer.music.load(music_file)
         pygame.mixer.music.play(-1)
         button.config(text="MUSIC ON")
-
+    
 def on_closing():
     pygame.mixer.music.stop()
     root.destroy()
@@ -68,11 +68,11 @@ def open_new_window():
             weight = data['weight']
             
             abilities = [ability['ability']['name'].title() for ability in data['abilities']]
-            abilities_text = ",".join(abilities)
+            abilities_text = ", ".join(abilities)
             
-            name_label.config(text=f"name: {name}")
-            height_label.config(text=f"Height: {height/10} m")
-            weight_label.config(text=f"height: {weight/10} kg")
+            name_label.config(text=f"Name: {name}")
+            height_label.config(text=f"Height: {height / 10} m")
+            weight_label.config(text=f"Weight: {weight / 10} kg")
             abilities_label.config(text=f"Abilities: {abilities_text}")
             
             sprite_url = data['sprites']['front_default']
@@ -80,7 +80,7 @@ def open_new_window():
                 image_response = requests.get(sprite_url)
                 image_response.raise_for_status()
                 image_data = Image.open(BytesIO(image_response.content))
-                image_data = image_data.resize((150,150))
+                image_data = image_data.resize((150, 150))
                 
                 global pokemon_image
                 pokemon_image = ImageTk.PhotoImage(image_data)
@@ -92,42 +92,51 @@ def open_new_window():
             messagebox.showerror("Error", f"Failed to fetch data:\n{e}")
         except KeyError:
             messagebox.showerror("Error", "Invalid Pokemon name or ID. Please try again.")
-            
+    
     global newwindow
     newwindow = tk.Toplevel(root)
     newwindow.title("Pokedex")
     newwindow_width = 600
     newwindow_height = 500
     newwindow.geometry(f"{newwindow_width}x{newwindow_height}")
-    root.resizable(False, False)
+    newwindow.resizable(False, False)
+    newwindow.configure(bg="white")
+    # Configure the grid columns to expand
+    newwindow.grid_columnconfigure(0, weight=1)
+    newwindow.grid_columnconfigure(1, weight=1)
+    newwindow.grid_columnconfigure(2, weight=1)
 
-    img = Image.open("logo.png")
-    resized_image = img.resize((100, 100))
-    new_image = ImageTk.PhotoImage(resized_image)
-    newwindow.iconphoto(False, new_image)
-        
-    font = tkFont.Font(family = "Agency FB", size = 30, weight = "bold")
-    
+    # Header Section
+    font = tkFont.Font(family="Agency FB", size=30, weight="bold")
     header = tk.Label(newwindow, text="Pokedex", bg="#f54260", fg="white", font=font, height=2)
-    header.pack(fill="x", side="top")
+    header.grid(row=0, column=0, columnspan=3, sticky="ew")  # Sticky 'ew' makes it stretch horizontally
     
-    font2 = tkFont.Font(family = "Agency FB", size = 15, weight = "bold")
+    # Input Section
+    font2 = tkFont.Font(family="Agency FB", size=20, weight="bold")
+    input_label = tk.Label(newwindow, text="Enter Pokemon Name or ID:", font=font2, bg="white")
+    pokemon_entry = tk.Entry(newwindow, font=font2, width=10, fg="white", bg="#f54260")
+    fetch_button = tk.Button(newwindow, text="Enter", command=getpokemondata, font=font2, fg="white",bg="#f54260", width=10)
     
-    input_label = tk.Label(newwindow, text="Enter Pokemon Name or ID:", font=font2)
-    pokemon_entry = tk.Entry(newwindow, font=font2, width=20)
-    fetch_button = tk.Button(newwindow, text="Enter", command=getpokemondata, font=font2)
-    
-    input_label.pack()
-    pokemon_entry.pack(pady=5)
-    fetch_button.pack()
+    input_label.grid(row=1, column=0, columnspan=2, pady=5, padx=10, sticky="w")
+    pokemon_entry.grid(row=1, column=1, pady=5, padx=5, sticky="e")
+    fetch_button.grid(row=1, column=2, columnspan=2, pady=10, padx=10)
 
-    name_label = tk.Lavel(newwindow, text="Name: ", font=font)
-    height_label = tk.Label(newwindow, text="Height: ", font=font)
-    weight_label = tk.Label(newwindow, text="Weight: ", font=font)
-    abilities_label = tk.Label(newwindow, text="Abilities: ", font=font, wraplength=35)
+    # Labels
+    name_label = tk.Label(newwindow, text="Name: ", font=font2, bg="white")
+    height_label = tk.Label(newwindow, text="Height: ", font=font2, bg="white")
+    weight_label = tk.Label(newwindow, text="Weight: ", font=font2, bg="white")
+    abilities_label = tk.Label(newwindow, text="Abilities: ", font=font2, wraplength=150, justify="left", bg="white")
+    image_label = tk.Label(newwindow,bg="white")  # Image placeholder
     
-    image_label = tk.Label(newwindow)
+    # Grid Placement
+    name_label.grid(row=2, column=0, sticky="w", padx=10, pady=5)
+    height_label.grid(row=3, column=0, sticky="w", padx=10, pady=5)
+    weight_label.grid(row=4, column=0, sticky="w", padx=10, pady=5)
+    abilities_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
+    image_label.grid(row=2, column=2, rowspan=3, padx=10, pady=5)  # Occupies all rows in column 2
     
+    
+    # Music Button Animation
     start_y = 550
     end_y = 450
 
@@ -143,12 +152,11 @@ def open_new_window():
         y = start_y
         move_button()
     
-    button_font2 = tkFont.Font(family = "Agency FB", size = 15, weight = "bold")
-    music_button = tk.Button(newwindow, text = "MUSIC OFF", font=button_font2, command = lambda: play_music(music_button))
-    music_button.pack()
-
-    newwindow.protocol("WM_DELETE_WINDOW", on_closing)
+    button_font2 = tkFont.Font(family="Agency FB", size=15, weight="bold")
+    music_button = tk.Button(newwindow, text="MUSIC OFF", font=button_font2, command=lambda: play_music(music_button),fg="white",bg="#f54260")
+    music_button.place(x=510, y=start_y)  # Start outside window
     
+    newwindow.protocol("WM_DELETE_WINDOW", on_closing)
     music_animate_button()
     
 root = tk.Tk()
