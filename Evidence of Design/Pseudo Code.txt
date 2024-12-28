@@ -1,0 +1,24 @@
+PSEUDO CODE
+
+Initialize an app with a locked size window, logo and title
+Make one window lead to a nested window
+Nested window should display interface
+
+While Main Window Running:
+
+Run text animations
+Run text fade-ins
+A button that runs a widget window
+
+While Secondary Window Running:
+
+Display texts, textbox, buttons
+Run animation for buttons
+Textbox to type in Name/ID to search
+Enter button to input data to fetch
+An error window if it did not meet the requirements/no results
+An image textbox to display the Pokémon Sprite
+Text templated where the text info will be displayed
+A music button for BGM (Background Music) that toggles OFF/ON
+Stops music and exits all windows when on closing
+
