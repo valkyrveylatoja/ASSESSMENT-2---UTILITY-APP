@@ -16,6 +16,7 @@ from io import BytesIO
 pygame.mixer.init()
 music_file = "Pokemon Center - Tee Lopes.mp3"
 
+# Music Function
 def play_music(button):
     if pygame.mixer.music.get_busy():
         pygame.mixer.music.stop()
@@ -24,12 +25,14 @@ def play_music(button):
         pygame.mixer.music.load(music_file)
         pygame.mixer.music.play(-1)
         button.config(text="MUSIC ON")
-    
+   
+# Closing Function
 def on_closing():
     pygame.mixer.music.stop()
     root.destroy()
     newwindow.destroy()
 
+# Text Animation
 def animation():
     global y_position, speed
 
@@ -41,6 +44,7 @@ def animation():
         title.place(x=window_width//2 - title.winfo_width()//2, y=y_position)
         root.after(10, animation)
 
+# Text Fade
 def fade_in_text(step=0):
     max_steps = 20
     r = g = b = int((1 - step / max_steps) * 255)
@@ -50,8 +54,10 @@ def fade_in_text(step=0):
     if step < max_steps:
         root.after(20, fade_in_text, step + 1)
 
+# Nested Window
 def open_new_window():
     
+    # API Data Fetching
     def getpokemondata():
         pokemon_name_or_id = pokemon_entry.get().strip().lower()
         
@@ -101,6 +107,7 @@ def open_new_window():
     newwindow.geometry(f"{newwindow_width}x{newwindow_height}")
     newwindow.resizable(False, False)
     newwindow.configure(bg="white")
+    
     # Configure the grid columns to expand
     newwindow.grid_columnconfigure(0, weight=1)
     newwindow.grid_columnconfigure(1, weight=1)
@@ -133,13 +140,13 @@ def open_new_window():
     height_label.grid(row=3, column=0, sticky="w", padx=10, pady=5)
     weight_label.grid(row=4, column=0, sticky="w", padx=10, pady=5)
     abilities_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
-    image_label.grid(row=2, column=2, rowspan=3, padx=10, pady=5)  # Occupies all rows in column 2
+    image_label.grid(row=2, column=2, rowspan=3, padx=10, pady=5)
     
     
     # Music Button Animation
     start_y = 550
     end_y = 450
-
+    
     def music_animate_button():
         def move_button():
             nonlocal y
@@ -158,7 +165,8 @@ def open_new_window():
     
     newwindow.protocol("WM_DELETE_WINDOW", on_closing)
     music_animate_button()
-    
+
+# Starting Window
 root = tk.Tk()
 root.title("Pokemon API")
 window_width = 600
@@ -166,6 +174,7 @@ window_height = 500
 root.geometry(f"{window_width}x{window_height}")
 root.resizable(False, False)
 
+# Logo
 img = Image.open("logo.png")
 resized_image = img.resize((100, 100))
 new_image = ImageTk.PhotoImage(resized_image)
@@ -177,22 +186,26 @@ canvas.pack(fill="both", expand=True)
 canvas.create_rectangle(0, 0, window_width, window_height // 2, fill="#f54260", outline="")
 canvas.create_rectangle(0, window_height // 2, window_width, window_height, fill="white", outline="")
 
+# Middle Bar
 black_bar_height = 10
 canvas.create_rectangle(0, window_height // 2 - black_bar_height // 2, window_width, window_height // 2 + black_bar_height //2, fill="black", outline="")
 font = tkFont.Font(family = "Agency FB", size = 50, weight = "bold")
 button_font = tkFont.Font(family = "Agency FB", size = 25, weight = "bold")
 
+# Button Radius
 button_radius = 60
 button_x = window_width // 2
 button_y = window_height // 2
 
 canvas.create_oval(button_x - button_radius, button_y - button_radius, button_x + button_radius, button_y + button_radius, fill="white", outline="black", width=2)
 
+# Header
 title_text = "Pokemon API"
 title = tk.Label(root, text=title_text, font=font, fg="white", bg="#f54260")
 title.update_idletasks()
 title_width = title.winfo_width()
 
+# Button
 open_button = tk.Button(root, text="OPEN", font=button_font, width=6, height=1, bg="white", fg="black", relief="sunken", highlightthickness=0, bd=0, command=open_new_window)
 open_button.place(x=button_x - 40, y=button_y - 30)
 
