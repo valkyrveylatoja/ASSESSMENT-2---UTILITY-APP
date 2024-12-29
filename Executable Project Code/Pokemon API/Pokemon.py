@@ -98,7 +98,8 @@ def open_new_window():
             messagebox.showerror("Error", f"Failed to fetch data:\n{e}")
         except KeyError:
             messagebox.showerror("Error", "Invalid Pokemon name or ID. Please try again.")
-    
+            
+    # New Widget Window
     global newwindow
     newwindow = tk.Toplevel(root)
     newwindow.title("Pokedex")
@@ -108,6 +109,13 @@ def open_new_window():
     newwindow.resizable(False, False)
     newwindow.configure(bg="white")
     
+    # Logo 
+    img = Image.open("logo.png")
+    resized_image = img.resize((100, 100))
+    new_image = ImageTk.PhotoImage(resized_image)
+    newwindow.iconphoto(False, new_image)
+
+
     # Configure the grid columns to expand
     newwindow.grid_columnconfigure(0, weight=1)
     newwindow.grid_columnconfigure(1, weight=1)
